@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FarmDirect — MVP Prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="design-tokens.css">
+  <style>
+    html, body { min-height: 100vh; }
+    body {
+      background:
+        radial-gradient(ellipse at 15% 0%, #dfe7d6 0%, transparent 50%),
+        radial-gradient(ellipse at 100% 100%, #f2e7be 0%, transparent 55%),
+        #ece7db;
+      background-attachment: fixed;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+    #root { min-height: 100vh; }
+
+    /* Stage layout for mobile + desktop combo */
+    .fd-stage {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 40px 20px 60px;
+      gap: 34px;
+    }
+    .fd-header {
+      max-width: 1200px; width: 100%;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0;
+    }
+    .fd-brand {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .fd-brand-mark {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: var(--fd-ink); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .fd-brand-name {
+      font-family: var(--fd-serif); font-size: 22px; font-weight: 500;
+      color: var(--fd-ink); letter-spacing: -0.2px;
+    }
+    .fd-brand-tag {
+      font-size: 10px; text-transform: uppercase; letter-spacing: 1.4px;
+      color: var(--fd-ink-3); font-weight: 600; margin-top: 2px;
+    }
+    .fd-switch {
+      display: inline-flex; background: var(--fd-surface);
+      border-radius: 999px; padding: 4px;
+      border: 1px solid var(--fd-line);
+      box-shadow: var(--fd-shadow-1);
+    }
+    .fd-switch button {
+      background: transparent; border: none; cursor: pointer;
+      padding: 8px 16px; font-size: 12.5px; font-weight: 500;
+      color: var(--fd-ink-2); border-radius: 999px;
+      display: flex; align-items: center; gap: 6px;
+      font-family: inherit;
+    }
+    .fd-switch button.on {
+      background: var(--fd-ink); color: #fff; font-weight: 600;
+    }
+
+    /* Two-phone side by side */
+    .fd-phones {
+      display: flex; gap: 60px; flex-wrap: wrap; justify-content: center;
+      align-items: flex-start;
+    }
+    .fd-phone-wrap {
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+    }
+    .fd-phone-label {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 1.4px;
+      color: var(--fd-ink-3); font-weight: 600;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .fd-phone-label .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+    }
+
+    /* Desktop dashboard framing */
+    .fd-desktop {
+      background: var(--fd-surface);
+      border-radius: 14px;
+      box-shadow: var(--fd-shadow-2);
+      border: 1px solid var(--fd-line);
+      overflow: hidden;
+      max-width: 100%;
+    }
+    .fd-desktop-chrome {
+      height: 34px; background: #efeadf; border-bottom: 1px solid var(--fd-line);
+      display: flex; align-items: center; padding: 0 14px; gap: 6px;
+    }
+    .fd-desktop-chrome .dot {
+      width: 11px; height: 11px; border-radius: 50%;
+    }
+
+    .fd-footer {
+      text-align: center; color: var(--fd-ink-3); font-size: 11px;
+      max-width: 720px; line-height: 1.6;
+      font-family: var(--fd-mono);
+    }
+  </style>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" src="tweaks_panel.jsx"></script>
+  <script type="text/babel" src="ui-kit.jsx"></script>
+  <script type="text/babel" src="data.jsx"></script>
+  <script type="text/babel" src="mobile-shell.jsx"></script>
+  <script type="text/babel" src="farmer-app.jsx"></script>
+  <script type="text/babel" src="buyer-app.jsx"></script>
+  <script type="text/babel" src="admin-dashboard.jsx"></script>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "palette": ["#2f6b3a","#d97a2b","#c9a227"],
+      "font": "Fraunces",
+      "surfaceWarmth": "warm"
+    }/*EDITMODE-END*/;
+
+    const PALETTES = [
+      ['#2f6b3a', '#d97a2b', '#c9a227'], // earthy (default)
+      ['#1e5f8a', '#e8a03a', '#3aa38a'], // ocean+harvest
+      ['#5a2d82', '#e8703a', '#c9a227'], // aubergine+marigold
+      ['#0f4c3a', '#b4451c', '#e2b940'], // deep forest
+    ];
+    const FONTS = ['Fraunces', 'DM Serif Display', 'Playfair Display', 'Instrument Serif'];
+
+    function App() {
+      const [view, setView] = useState(() => localStorage.getItem('fd_view') || 'both');
+      const [t, setTweak] = window.useTweaks ? window.useTweaks(TWEAK_DEFAULTS) : [TWEAK_DEFAULTS, () => {}];
+
+      useEffect(() => { localStorage.setItem('fd_view', view); }, [view]);
+
+      // Apply palette + font tokens
+      useEffect(() => {
+        const [p1, p2, p3] = t.palette || PALETTES[0];
+        const r = document.documentElement;
+        r.style.setProperty('--fd-primary', p1);
+        r.style.setProperty('--fd-accent', p2);
+        r.style.setProperty('--fd-gold', p3);
+        // recompute soft variants
+        r.style.setProperty('--fd-primary-soft', p1 + '22');
+        r.style.setProperty('--fd-accent-soft', p2 + '22');
+        r.style.setProperty('--fd-gold-soft', p3 + '22');
+        r.style.setProperty('--fd-serif', `'${t.font}', Georgia, serif`);
+
+        // Also load the font dynamically if not already
+        const id = 'fd-font-' + t.font.replace(/\s+/g, '-');
+        if (!document.getElementById(id)) {
+          const link = document.createElement('link');
+          link.id = id; link.rel = 'stylesheet';
+          link.href = `https://fonts.googleapis.com/css2?family=${t.font.replace(/\s+/g, '+')}:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap`;
+          document.head.appendChild(link);
+        }
+      }, [t.palette, t.font]);
+
+      return (
+        <div className="fd-stage" data-screen-label="01 FarmDirect Prototype">
+          <header className="fd-header">
+            <div className="fd-brand">
+              <div className="fd-brand-mark"><FDIcon name="leaf" size={22} color="#fff"/></div>
+              <div>
+                <div className="fd-brand-name">FarmDirect</div>
+                <div className="fd-brand-tag">Direct · Fair · Data-driven</div>
+              </div>
+            </div>
+            <div className="fd-switch">
+              {[
+                { id: 'both',   label: 'Both apps' },
+                { id: 'farmer', label: 'Farmer' },
+                { id: 'buyer',  label: 'Buyer' },
+                { id: 'admin',  label: 'Analytics' },
+              ].map(v => (
+                <button key={v.id} className={view === v.id ? 'on' : ''} onClick={() => setView(v.id)}>
+                  {v.label}
+                </button>
+              ))}
+            </div>
+          </header>
+
+          {(view === 'both' || view === 'farmer' || view === 'buyer') && (
+            <div className="fd-phones">
+              {(view === 'both' || view === 'farmer') && (
+                <div className="fd-phone-wrap" data-screen-label="Farmer app">
+                  <div className="fd-phone-label">
+                    <span className="dot" style={{ background: 'var(--fd-primary)' }}/>
+                    Farmer app · Ramesh Patil
+                  </div>
+                  <FarmerApp/>
+                </div>
+              )}
+              {(view === 'both' || view === 'buyer') && (
+                <div className="fd-phone-wrap" data-screen-label="Buyer app">
+                  <div className="fd-phone-label">
+                    <span className="dot" style={{ background: 'var(--fd-accent)' }}/>
+                    Buyer app · Green Basket Retail
+                  </div>
+                  <BuyerApp/>
+                </div>
+              )}
+            </div>
+          )}
+
+          {view === 'admin' && (
+            <div className="fd-desktop" data-screen-label="Admin dashboard">
+              <div className="fd-desktop-chrome">
+                <span className="dot" style={{ background: '#ff5f57' }}/>
+                <span className="dot" style={{ background: '#febc2e' }}/>
+                <span className="dot" style={{ background: '#28c840' }}/>
+                <span style={{ marginLeft: 14, fontSize: 11, color: 'var(--fd-ink-2)', fontFamily: 'var(--fd-mono)' }}>
+                  admin.farmdirect.in
+                </span>
+              </div>
+              <AdminDashboard/>
+            </div>
+          )}
+
+          <div className="fd-footer">
+            FarmDirect MVP prototype · Farmer ↔ Buyer ↔ Analytics<br/>
+            Toggle <b>Tweaks</b> in the toolbar to try color palettes and font pairings.
+          </div>
+
+          {window.TweaksPanel && (
+            <TweaksPanel>
+              <TweakSection title="Brand palette">
+                <TweakColor
+                  label="Palette"
+                  value={t.palette}
+                  options={PALETTES}
+                  onChange={(v) => setTweak('palette', v)}
+                />
+              </TweakSection>
+              <TweakSection title="Typography">
+                <TweakSelect
+                  label="Display font"
+                  value={t.font}
+                  options={FONTS}
+                  onChange={(v) => setTweak('font', v)}
+                />
+              </TweakSection>
+              <TweakSuggestionBar suggestions={[
+                'Make the primary color a deeper forest green',
+                'Add a scale-adjust so it looks good on a laptop',
+                'Add a language switcher to the buyer app',
+                'Show a farmer verification step (Aadhaar OTP)'
+              ]}/>
+            </TweaksPanel>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  </script>
+</body>
+</html>

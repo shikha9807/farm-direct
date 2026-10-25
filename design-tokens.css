@@ -1,0 +1,73 @@
+/* FarmDirect — Design tokens (earthy agricultural aesthetic) */
+:root {
+  /* Palette — earthy, farm-fresh */
+  --fd-bg: #f6f3ec;           /* warm off-white paper */
+  --fd-surface: #ffffff;
+  --fd-surface-2: #efeadf;    /* subtle contrast surface */
+  --fd-ink: #1a2e22;          /* deep forest, primary text */
+  --fd-ink-2: #4a5b52;        /* secondary text */
+  --fd-ink-3: #8a9990;        /* tertiary / captions */
+  --fd-line: #e3dccf;         /* hairline borders */
+  --fd-line-2: #d4ccbb;
+
+  --fd-primary: #2f6b3a;      /* leaf green — brand */
+  --fd-primary-ink: #1f4a28;
+  --fd-primary-soft: #dfebd6;
+  --fd-accent: #d97a2b;       /* terracotta / marigold */
+  --fd-accent-soft: #f6e2cf;
+  --fd-gold: #c9a227;         /* wheat gold */
+  --fd-gold-soft: #f2e7be;
+  --fd-danger: #b3421f;
+  --fd-up: #2f6b3a;
+  --fd-down: #b3421f;
+
+  /* Type */
+  --fd-sans: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --fd-serif: 'Fraunces', 'Georgia', serif;
+  --fd-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Radii */
+  --fd-r-sm: 8px;
+  --fd-r-md: 14px;
+  --fd-r-lg: 20px;
+  --fd-r-xl: 28px;
+
+  /* Shadows */
+  --fd-shadow-1: 0 1px 2px rgba(26,46,34,0.06), 0 2px 8px rgba(26,46,34,0.04);
+  --fd-shadow-2: 0 4px 16px rgba(26,46,34,0.08), 0 12px 40px rgba(26,46,34,0.06);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--fd-sans);
+  color: var(--fd-ink);
+  background: #ece7db;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* utility */
+.fd-mono { font-family: var(--fd-mono); }
+.fd-serif { font-family: var(--fd-serif); }
+.fd-num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+
+/* Scrollbars in the mobile frames */
+.fd-scroll::-webkit-scrollbar { width: 6px; }
+.fd-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 6px; }
+
+/* SVG placeholder pattern for produce imagery */
+.fd-placeholder {
+  background-color: var(--fd-primary-soft);
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(47,107,58,0.10) 0 8px,
+    transparent 8px 18px
+  );
+  display: flex; align-items: center; justify-content: center;
+  color: var(--fd-primary-ink);
+  font-family: var(--fd-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
